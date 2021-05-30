@@ -8,7 +8,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var banknoteStorage StorageSystem
+
 func main() {
+
+	banknoteStorage = NewStorageSystemWithName("Storage01")
+
 	r := gin.Default()
 
 	v1 := r.Group("/cashier")
@@ -19,24 +24,15 @@ func main() {
 
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
-
 func cashierInfoHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.JSON(200, CashierInformation{
 			"Cashier01",
-			StorageInfo{
-				[]Banknote{
-					{
-						"Coin10", 10, 5,
-					},
-					{
-						"Coin5", 5, 2,
-					},
-				},
-			},
+			banknoteStorage,
 		})
 	}
 }
+
 func purchaseHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var pAmount float64
@@ -58,24 +54,42 @@ func purchaseHandler() gin.HandlerFunc {
 			})
 			return
 		}
-		fmt.Println("Input ", pAmount, nAmount)
-
-		c.JSON(200, gin.H{
-			"Change": (pAmount - nAmount),
-		})
+		change := pAmount - nAmount
+		if change < 0 {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"Message": "Not Enough payment amount",
+			})
+			return
+		}
+		result, ok := calculateBanknoteFromChange(change)
+		fmt.Println(result)
+		if !ok {
+			c.JSON(200, gin.H{
+				"Message": "Cannot purchase,storage not enough change money",
+			})
+			return
+		}
+		if len(result.BanknoteChange) == 0 {
+			c.JSON(200, gin.H{
+				"Message": "No change money",
+			})
+			return
+		}
+		c.JSON(200, result)
 	}
 }
 
 type CashierInformation struct {
 	Name        string
-	StorageInfo StorageInfo
+	StorageInfo StorageSystem
 }
 
-type StorageInfo struct {
-	Item []Banknote
+type BankNoteChangeInfo struct {
+	Change         float64
+	BanknoteChange []BankNoteInfo
 }
 
-type Banknote struct {
+type BankNoteInfo struct {
 	Name     string
 	Value    float64
 	Quantity int
