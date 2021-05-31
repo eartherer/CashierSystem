@@ -1,8 +1,11 @@
 package main
 
+import "errors"
+
 type StorageSystem struct {
 	Name            string
 	BankNoteStorage map[string]BankNoteStorage
+	BankNoteTypes   []string
 }
 
 type BankNoteStorage struct {
@@ -13,7 +16,7 @@ type BankNoteStorage struct {
 }
 
 func (s *StorageSystem) getAllBankNoteType() []string {
-	return []string{"BankNote1000", "BankNote500", "BankNote100", "BankNote50", "BankNote20", "Coin10", "Coin5", "Coin1", "Coin0.25"}
+	return s.BankNoteTypes
 }
 func (s *StorageSystem) withdrawBanknoteName(name string, quantity int) bool {
 	banknote, ok := s.BankNoteStorage[name]
@@ -26,16 +29,24 @@ func (s *StorageSystem) withdrawBanknoteName(name string, quantity int) bool {
 	}
 	return false
 }
+func (s *StorageSystem) AddBankNoteStorage(newBank BankNoteStorage) {
+	s.BankNoteStorage[newBank.Name] = newBank
+	s.BankNoteTypes = append(s.BankNoteTypes, newBank.Name)
+}
 func NewStorageSystemWithName(name string) StorageSystem {
 	result := StorageSystem{Name: name, BankNoteStorage: make(map[string]BankNoteStorage)}
-	result.BankNoteStorage["BankNote1000"] = BankNoteStorage{"BankNote1000", 1000, 10, 10}
-	result.BankNoteStorage["BankNote500"] = BankNoteStorage{"BankNote500", 500, 20, 20}
-	result.BankNoteStorage["BankNote100"] = BankNoteStorage{"BankNote100", 100, 15, 15}
-	result.BankNoteStorage["BankNote50"] = BankNoteStorage{"BankNote50", 50, 20, 20}
-	result.BankNoteStorage["BankNote20"] = BankNoteStorage{"Coin20", 20, 30, 30}
-	result.BankNoteStorage["Coin10"] = BankNoteStorage{"Coin10", 10, 20, 20}
-	result.BankNoteStorage["Coin5"] = BankNoteStorage{"Coin5", 5, 20, 20}
-	result.BankNoteStorage["Coin1"] = BankNoteStorage{"Coin1", 1, 20, 20}
-	result.BankNoteStorage["Coin0.25"] = BankNoteStorage{"Coin0.25", 0.25, 50, 50}
 	return result
+}
+
+func (s *StorageSystem) refillBankNoteStorage(name string, quantity int) error {
+	if storage, ok := s.BankNoteStorage[name]; ok {
+		if (storage.Quantity + quantity) > storage.MaxQuantity {
+			return errors.New("exceed MaxQuantity")
+		} else {
+			storage.Quantity += quantity
+			s.BankNoteStorage[name] = storage
+			return nil
+		}
+	}
+	return errors.New(name + " not found")
 }
