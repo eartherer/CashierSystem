@@ -3,9 +3,9 @@ package main
 import "errors"
 
 type StorageSystem struct {
-	Name            string
-	BankNoteStorage map[string]BankNoteStorage
-	BankNoteTypes   []string
+	Name            string                     `json:"StorageName"`
+	BankNoteStorage map[string]BankNoteStorage `json:"BankNoteInfo"`
+	BankNoteTypes   []string                   `json:"AllBankNote"`
 }
 
 type BankNoteStorage struct {
@@ -34,8 +34,8 @@ func (s *StorageSystem) AddBankNoteStorage(newBank BankNoteStorage) {
 	s.BankNoteTypes = append(s.BankNoteTypes, newBank.Name)
 }
 func NewStorageSystemWithName(name string) StorageSystem {
-	result := StorageSystem{Name: name, BankNoteStorage: make(map[string]BankNoteStorage)}
-	return result
+	banknoteStorage := StorageSystem{Name: name, BankNoteStorage: make(map[string]BankNoteStorage)}
+	return banknoteStorage
 }
 
 func (s *StorageSystem) refillBankNoteStorage(name string, quantity int) error {
@@ -49,4 +49,16 @@ func (s *StorageSystem) refillBankNoteStorage(name string, quantity int) error {
 		}
 	}
 	return errors.New(name + " not found")
+}
+func (banknoteStorage *StorageSystem) initBankNoteStorageWithDefault() error {
+	banknoteStorage.AddBankNoteStorage(BankNoteStorage{"BankNote1000", 1000, 10, 10})
+	banknoteStorage.AddBankNoteStorage(BankNoteStorage{"BankNote500", 500, 20, 20})
+	banknoteStorage.AddBankNoteStorage(BankNoteStorage{"BankNote100", 100, 15, 15})
+	banknoteStorage.AddBankNoteStorage(BankNoteStorage{"BankNote50", 50, 20, 20})
+	banknoteStorage.AddBankNoteStorage(BankNoteStorage{"Coin20", 20, 30, 30})
+	banknoteStorage.AddBankNoteStorage(BankNoteStorage{"Coin10", 10, 20, 20})
+	banknoteStorage.AddBankNoteStorage(BankNoteStorage{"Coin5", 5, 20, 20})
+	banknoteStorage.AddBankNoteStorage(BankNoteStorage{"Coin1", 1, 20, 20})
+	banknoteStorage.AddBankNoteStorage(BankNoteStorage{"Coin0.25", 0.25, 50, 50})
+	return nil
 }

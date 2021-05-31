@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 var banknoteStorage StorageSystem
@@ -13,26 +14,20 @@ var banknoteStorage StorageSystem
 func main() {
 
 	banknoteStorage = NewStorageSystemWithName("Storage01")
-	banknoteStorage.AddBankNoteStorage(BankNoteStorage{"BankNote1000", 1000, 10, 10})
-	banknoteStorage.AddBankNoteStorage(BankNoteStorage{"BankNote500", 500, 20, 20})
-	banknoteStorage.AddBankNoteStorage(BankNoteStorage{"BankNote100", 100, 15, 15})
-	banknoteStorage.AddBankNoteStorage(BankNoteStorage{"BankNote50", 50, 20, 20})
-	banknoteStorage.AddBankNoteStorage(BankNoteStorage{"Coin20", 20, 30, 30})
-	banknoteStorage.AddBankNoteStorage(BankNoteStorage{"Coin10", 10, 20, 20})
-	banknoteStorage.AddBankNoteStorage(BankNoteStorage{"Coin5", 5, 20, 20})
-	banknoteStorage.AddBankNoteStorage(BankNoteStorage{"Coin1", 1, 20, 20})
-	banknoteStorage.AddBankNoteStorage(BankNoteStorage{"Coin0.25", 0.25, 50, 50})
 
 	r := gin.Default()
+	r = setupRouter(r)
 
+	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+}
+func setupRouter(r *gin.Engine) *gin.Engine {
 	v1 := r.Group("/cashier")
 	{
-		v1.GET("/", cashierInfoHandler())
+		v1.GET("", cashierInfoHandler())
 		v1.POST("/purchase", purchaseHandler())
 		v1.POST("/refill", storageRefillHandler())
 	}
-
-	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	return r
 }
 func cashierInfoHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -122,8 +117,8 @@ func storageRefillHandler() gin.HandlerFunc {
 }
 
 type CashierInformation struct {
-	Name        string
-	StorageInfo StorageSystem
+	Name        string        `json:"CashierName"`
+	StorageInfo StorageSystem `json:"Storage"`
 }
 
 type BankNoteChangeInfo struct {
