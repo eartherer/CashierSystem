@@ -56,4 +56,8 @@ func Test02_PurchaseWithNotEnoughStorage(t *testing.T) {
 	if ok {
 		t.Fail()
 	}
+
+	assert.Equal(t, 20, storage.BankNoteStorage["Coin5"].Quantity)
+	assert.Equal(t, 20, storage.BankNoteStorage["Coin1"].Quantity)
+	assert.Equal(t, 50, storage.BankNoteStorage["Coin0.25"].Quantity)
 }
