@@ -102,7 +102,7 @@ The REST API to support above feature
     }
 }
 
-## Create a new Thing
+## Purchase a Thing
 
 ### Request
 
