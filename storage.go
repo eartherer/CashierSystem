@@ -1,11 +1,15 @@
 package main
 
-import "errors"
+import (
+	"errors"
+	"sync"
+)
 
 type StorageSystem struct {
 	Name            string                     `json:"StorageName"`
 	BankNoteStorage map[string]BankNoteStorage `json:"BankNoteInfo"`
 	BankNoteTypes   []string                   `json:"AllBankNote"`
+	mu              sync.Mutex
 }
 
 type BankNoteStorage struct {
@@ -19,6 +23,8 @@ func (s *StorageSystem) getAllBankNoteType() []string {
 	return s.BankNoteTypes
 }
 func (s *StorageSystem) withdrawBanknoteName(name string, quantity int) bool {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	banknote, ok := s.BankNoteStorage[name]
 	if ok {
 		if banknote.Quantity >= quantity {
@@ -30,15 +36,24 @@ func (s *StorageSystem) withdrawBanknoteName(name string, quantity int) bool {
 	return false
 }
 func (s *StorageSystem) AddBankNoteStorage(newBank BankNoteStorage) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	s.BankNoteStorage[newBank.Name] = newBank
 	s.BankNoteTypes = append(s.BankNoteTypes, newBank.Name)
 }
 func NewStorageSystemWithName(name string) StorageSystem {
-	banknoteStorage := StorageSystem{Name: name, BankNoteStorage: make(map[string]BankNoteStorage)}
+	banknoteStorage := StorageSystem{
+		Name:            name,
+		BankNoteStorage: make(map[string]BankNoteStorage),
+		BankNoteTypes:   []string{},
+		mu:              sync.Mutex{},
+	}
 	return banknoteStorage
 }
 
 func (s *StorageSystem) refillBankNoteStorage(name string, quantity int) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	if storage, ok := s.BankNoteStorage[name]; ok {
 		if (storage.Quantity + quantity) > storage.MaxQuantity {
 			return errors.New("exceed MaxQuantity")
