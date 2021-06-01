@@ -21,9 +21,7 @@ func calculateBanknoteFromChange(storage *StorageSystem, change float64) (BankNo
 
 				if quantityCanPick > 0 { //Need to pick some banknote
 					//Withdraw from storage
-					canWithdraw := storage.withdrawBanknoteName(bankNoteFromStorage.Name, quantityCanPick)
-
-					if canWithdraw {
+					if storage.BankNoteStorage[typeName].Quantity >= quantityCanPick {
 						//Decrease remaining change
 						remainingChange = remainingChange - (float64(quantityCanPick) * value)
 						//Add banknote to change result
@@ -41,5 +39,13 @@ func calculateBanknoteFromChange(storage *StorageSystem, change float64) (BankNo
 	if remainingChange > 0 { // Storage cannot make change, not enough banknote
 		return result, false
 	}
+
+	withdrawFromStorage(storage, result)
 	return result, true
+}
+
+func withdrawFromStorage(storage *StorageSystem, solution BankNoteChangeInfo) {
+	for _, banknote := range solution.BanknoteChange {
+		storage.withdrawBanknoteName(banknote.Name, banknote.Quantity)
+	}
 }
