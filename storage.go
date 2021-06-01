@@ -55,7 +55,7 @@ func (banknoteStorage *StorageSystem) initBankNoteStorageWithDefault() error {
 	banknoteStorage.AddBankNoteStorage(BankNoteStorage{"BankNote500", 500, 20, 20})
 	banknoteStorage.AddBankNoteStorage(BankNoteStorage{"BankNote100", 100, 15, 15})
 	banknoteStorage.AddBankNoteStorage(BankNoteStorage{"BankNote50", 50, 20, 20})
-	banknoteStorage.AddBankNoteStorage(BankNoteStorage{"Coin20", 20, 30, 30})
+	banknoteStorage.AddBankNoteStorage(BankNoteStorage{"BankNote20", 20, 30, 30})
 	banknoteStorage.AddBankNoteStorage(BankNoteStorage{"Coin10", 10, 20, 20})
 	banknoteStorage.AddBankNoteStorage(BankNoteStorage{"Coin5", 5, 20, 20})
 	banknoteStorage.AddBankNoteStorage(BankNoteStorage{"Coin1", 1, 20, 20})

@@ -14,6 +14,7 @@ var banknoteStorage StorageSystem
 func main() {
 
 	banknoteStorage = NewStorageSystemWithName("Storage01")
+	banknoteStorage.initBankNoteStorageWithDefault()
 
 	r := gin.Default()
 	r = setupRouter(r)
@@ -66,7 +67,7 @@ func purchaseHandler() gin.HandlerFunc {
 			})
 			return
 		}
-		result, ok := calculateBanknoteFromChange(change)
+		result, ok := calculateBanknoteFromChange(&banknoteStorage, change)
 		fmt.Println(result)
 		if !ok {
 			c.JSON(200, gin.H{

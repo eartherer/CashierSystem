@@ -1,12 +1,12 @@
 package main
 
-func calculateBanknoteFromChange(change float64) (BankNoteChangeInfo, bool) {
+func calculateBanknoteFromChange(storage *StorageSystem, change float64) (BankNoteChangeInfo, bool) {
 	var quantityCanPick int
 	result := BankNoteChangeInfo{Change: change, BanknoteChange: []BankNoteInfo{}}
 	remainingChange := change
-	bankNoteType := banknoteStorage.getAllBankNoteType()
+	bankNoteType := storage.getAllBankNoteType()
 	for _, typeName := range bankNoteType {
-		bankNoteFromStorage, ok := banknoteStorage.BankNoteStorage[typeName]
+		bankNoteFromStorage, ok := storage.BankNoteStorage[typeName]
 		if ok {
 			quantityCanPick = 0
 			value := bankNoteFromStorage.Value
@@ -21,7 +21,7 @@ func calculateBanknoteFromChange(change float64) (BankNoteChangeInfo, bool) {
 
 				if quantityCanPick > 0 { //Need to pick some banknote
 					//Withdraw from storage
-					canWithdraw := banknoteStorage.withdrawBanknoteName(bankNoteFromStorage.Name, quantityCanPick)
+					canWithdraw := storage.withdrawBanknoteName(bankNoteFromStorage.Name, quantityCanPick)
 
 					if canWithdraw {
 						//Decrease remaining change
