@@ -41,14 +41,14 @@ func (s *StorageSystem) AddBankNoteStorage(newBank BankNoteStorage) {
 	s.BankNoteStorage[newBank.Name] = newBank
 	s.BankNoteTypes = append(s.BankNoteTypes, newBank.Name)
 }
-func NewStorageSystemWithName(name string) StorageSystem {
+func NewStorageSystemWithName(name string) *StorageSystem {
 	banknoteStorage := StorageSystem{
 		Name:            name,
 		BankNoteStorage: make(map[string]BankNoteStorage),
 		BankNoteTypes:   []string{},
 		mu:              sync.Mutex{},
 	}
-	return banknoteStorage
+	return &banknoteStorage
 }
 
 func (s *StorageSystem) refillBankNoteStorage(name string, quantity int) error {

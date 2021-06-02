@@ -20,7 +20,7 @@ func Test01_Purchase_Success(t *testing.T) {
 	storage.AddBankNoteStorage(BankNoteStorage{"Coin0.25", 0.25, 50, 50})
 
 	change := 78.50
-	changeInfo, ok := calculateBanknoteFromChange(&storage, change)
+	changeInfo, ok := calculateBanknoteFromChange(storage, change)
 	if !ok {
 		t.Fail()
 	}
@@ -52,7 +52,7 @@ func Test02_PurchaseWithNotEnoughStorage(t *testing.T) {
 
 	change := 9999.99
 
-	_, ok := calculateBanknoteFromChange(&storage, change)
+	_, ok := calculateBanknoteFromChange(storage, change)
 	if ok {
 		t.Fail()
 	}

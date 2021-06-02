@@ -9,7 +9,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-var banknoteStorage StorageSystem
+var banknoteStorage *StorageSystem
 
 func main() {
 
@@ -67,7 +67,7 @@ func purchaseHandler() gin.HandlerFunc {
 			})
 			return
 		}
-		result, ok := calculateBanknoteFromChange(&banknoteStorage, change)
+		result, ok := calculateBanknoteFromChange(banknoteStorage, change)
 		fmt.Println(result)
 		if !ok {
 			c.JSON(200, gin.H{
@@ -118,8 +118,8 @@ func storageRefillHandler() gin.HandlerFunc {
 }
 
 type CashierInformation struct {
-	Name        string        `json:"CashierName"`
-	StorageInfo StorageSystem `json:"Storage"`
+	Name        string         `json:"CashierName"`
+	StorageInfo *StorageSystem `json:"Storage"`
 }
 
 type BankNoteChangeInfo struct {
