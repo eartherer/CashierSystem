@@ -1,6 +1,18 @@
 # Cashier System REST API 
 
-This is a Cashier API
+This is a Cashier API which support following by Banknote/Coin only.
+
+| Bank Note/Coin Value      | Amount |
+| -----------   | ----------- |
+| 1000          | 10       |
+| 500           | 20        |
+| 100           | 15        |
+| 50           | 20        |
+| 20           | 30        |
+| 10           | 20        |
+| 5           | 20        |
+| 1           | 20        |
+| 0.25           | 50        |
 
 # Feature
 -   Purchase System
