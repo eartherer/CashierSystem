@@ -15,8 +15,8 @@ This is a Cashier API which support following by Banknote/Coin only.
 | 0.25           | 50        |
 
 # Feature
+-   Get Cashier Information
 -   Purchase System
--   Add new Banknote/Coin type to Cashier Storage
 -   Refill Banknote/Coin type to Cashier Storage
 
 
